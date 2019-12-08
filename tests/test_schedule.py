@@ -1,9 +1,11 @@
-from datetime import timedelta
+from datetime import datetime, timedelta
+from unittest import mock
 
 import pytest
 from django.utils import timezone
+from pytz import UTC
 
-from schedules.models import Schedule
+from schedules.models import Schedule, ScheduleIterator
 
 
 @pytest.mark.parametrize(
@@ -14,3 +16,19 @@ def test_schedule_default_values(field_name, expected):
     """Should have expected default value."""
     schedule_field = Schedule._meta.get_field(field_name)
     assert schedule_field.default == expected
+
+
+def test_iterator():
+    """Should use schedule iterator."""
+    schedule = Schedule()
+    assert isinstance(iter(schedule), ScheduleIterator)
+
+
+def test_next_occurrence():
+    """Should have accurately date and time for the next event in the schedule."""
+    schedule_start = datetime(2000, 1, 2, 3, 4, 5, 6, tzinfo=UTC)
+    schedule_every = timedelta(hours=1)
+    schedule = Schedule(start=schedule_start, every=schedule_every)
+    expected = schedule_start + schedule_every
+    with mock.patch.object(timezone, "now", return_value=schedule_start):
+        assert schedule.next_occurrence() == expected

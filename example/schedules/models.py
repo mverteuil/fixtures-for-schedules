@@ -35,9 +35,9 @@ class ScheduleIterator:
         """Any occurrences remaining before the finish, or ."""
         if self._schedule.finish:
             return self._next_occurrence < self._schedule.finish
-        return False
+        return True
 
     def __next__(self) -> datetime:
-        while self.has_occurrences():
-            yield self._next_occurrence
-            self._next_occurrence += self._schedule.every
+        self._next_occurrence += self._schedule.every
+        if self.has_occurrences():
+            return self._next_occurrence
