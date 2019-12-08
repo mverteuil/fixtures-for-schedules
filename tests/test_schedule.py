@@ -1,9 +1,11 @@
+import pytest
 from django.utils import timezone
 
 from schedules.models import Schedule
 
 
-def test_default_start_date():
+@pytest.mark.parametrize(("field_name", "expected"), (("start", timezone.now),))
+def test_default_start_date(field_name, expected):
     """Should be now if not otherwise specified."""
-    start_field = Schedule._meta.get_field("start")
-    assert start_field.default is timezone.now
+    schedule_field = Schedule._meta.get_field(field_name)
+    assert schedule_field.default == expected
