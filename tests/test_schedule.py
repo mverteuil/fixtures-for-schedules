@@ -1,9 +1,7 @@
-from datetime import datetime, timedelta
-from unittest import mock
+from datetime import timedelta
 
 import pytest
 from django.utils import timezone
-from pytz import UTC
 
 from schedules.models import Schedule, ScheduleIterator
 
