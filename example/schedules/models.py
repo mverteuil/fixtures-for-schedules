@@ -14,7 +14,7 @@ class Schedule(models.Model):
 
     def next_occurrence(self) -> datetime:
         """Date and time for the next occurrence."""
-        occurrences = ScheduleIterator(self)
+        occurrences = iter(self)
         now = timezone.now()
         while next_occurrence := next(occurrences):
             if next_occurrence > now:
@@ -41,3 +41,4 @@ class ScheduleIterator:
         self._next_occurrence += self._schedule.every
         if self.has_occurrences():
             return self._next_occurrence
+        raise StopIteration
