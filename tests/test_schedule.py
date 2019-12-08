@@ -26,9 +26,8 @@ def test_iterator():
 
 def test_next_occurrence():
     """Should have accurately date and time for the next event in the schedule."""
-    schedule_start = datetime(2000, 1, 2, 3, 4, 5, 6, tzinfo=UTC)
+    schedule_start = timezone.now()
     schedule_every = timedelta(hours=1)
     schedule = Schedule(start=schedule_start, every=schedule_every)
     expected = schedule_start + schedule_every
-    with mock.patch.object(timezone, "now", return_value=schedule_start):
-        assert schedule.next_occurrence() == expected
+    assert schedule.next_occurrence() == expected
